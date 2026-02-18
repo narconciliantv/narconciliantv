@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>Micro Nations TV - ALF Pilot</title>
+<title>Micro Nations TV</title>
 <style>
   body {
     background: #111;
@@ -29,11 +29,38 @@
     border: 2px solid #444;
     background: #000;
   }
+  #playlist {
+    margin: 20px auto;
+    width: 80%;
+    max-width: 800px;
+    text-align: left;
+  }
+  .playlist-item {
+    padding: 10px;
+    border-bottom: 1px solid #444;
+    cursor: pointer;
+  }
+  .playlist-item.active {
+    background: #333;
+    font-weight: bold;
+  }
+  #password-prompt {
+    margin: 20px auto;
+  }
+  #controls {
+    margin: 10px;
+    display: none;
+  }
+  button {
+    padding: 5px 10px;
+    margin: 0 5px;
+    cursor: pointer;
+  }
 </style>
 </head>
 <body>
 
-<header>Micro Nations TV - ALF Unaired Pilot</header>
+<header>Micro Nations TV</header>
 
 <div id="player-container">
   <video id="tv-player" controls autoplay>
@@ -42,6 +69,86 @@
   </video>
 </div>
 
+<div id="playlist">
+  <div class="playlist-item" data-src="https://ia801505.us.archive.org/25/items/alf-complete/S01E00%20-%20Unaired%20Pilot.mp4">ALF Unaired Pilot</div>
+  <div class="playlist-item" data-src="https://ia801505.us.archive.org/25/items/alf-complete/S01E01%20-%20Season%201%20Episode%201.mp4">ALF S01E01</div>
+  <div class="playlist-item" data-src="https://ia801505.us.archive.org/25/items/alf-complete/S01E02%20-%20Season%201%20Episode%202.mp4">ALF S01E02</div>
+</div>
+
+<div id="password-prompt">
+  <input type="password" id="password-input" placeholder="Enter control password">
+  <button id="submit-password">Unlock Controls</button>
+</div>
+
+<div id="controls">
+  <button id="prev">⏮ Previous</button>
+  <button id="next">⏭ Next</button>
+</div>
+
+<script>
+const PASSWORD = "microtv123"; // Change to your password
+const player = document.getElementById('tv-player');
+const items = document.querySelectorAll('.playlist-item');
+const passwordPrompt = document.getElementById('password-prompt');
+const controlsDiv = document.getElementById('controls');
+const passwordInput = document.getElementById('password-input');
+const submitPassword = document.getElementById('submit-password');
+
+let currentIndex = 0;
+let controlsUnlocked = false;
+
+// Highlight current playlist item
+function highlight(index) {
+  items.forEach(item => item.classList.remove('active'));
+  items[index].classList.add('active');
+}
+
+// Play a video
+function playVideo(index) {
+  const selected = items[index];
+  if (!selected) return;
+  player.src = selected.dataset.src;
+  player.play();
+  currentIndex = index;
+  highlight(index);
+}
+
+// Unlock controls after password
+function unlockControls() {
+  controlsUnlocked = true;
+  passwordPrompt.style.display = 'none';
+  controlsDiv.style.display = 'block';
+  alert("Controls unlocked! You can now use the playlist and skip buttons.");
+}
+
+// Password submit
+submitPassword.addEventListener('click', () => {
+  if (passwordInput.value.trim() === PASSWORD) unlockControls();
+  else alert("Incorrect password");
+  passwordInput.value = '';
+});
+
+// Playlist clicks (require password)
+items.forEach((item, index) => {
+  item.addEventListener('click', () => {
+    if (controlsUnlocked) playVideo(index);
+    else alert("Enter password to change videos");
+  });
+});
+
+// Skip buttons (require password)
+document.getElementById('prev').addEventListener('click', () => {
+  if (!controlsUnlocked) return;
+  if (currentIndex > 0) playVideo(currentIndex - 1);
+});
+document.getElementById('next').addEventListener('click', () => {
+  if (!controlsUnlocked) return;
+  if (currentIndex < items.length - 1) playVideo(currentIndex + 1);
+});
+
+// Start first video
+highlight(0);
+</script>
+
 </body>
 </html>
-
