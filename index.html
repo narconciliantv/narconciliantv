@@ -128,6 +128,8 @@
 </div>
 
 <script>
+document.addEventListener("DOMContentLoaded", () => {
+
 const video = document.getElementById('tvScreen');
 const overlay = document.getElementById('channelOverlay');
 const staticEffect = document.getElementById('staticEffect');
@@ -135,43 +137,32 @@ const staticEffect = document.getElementById('staticEffect');
 let isPoweredOn = true;
 
 /* =========================
-   CHANNELS (your stations)
+   CHANNELS
    ========================= */
 
 const channels = [
   {
-    name: " Channel 03",
+    name: "Sitcom Channel",
     videos: [
       {
         title: "ALF – Unaired Pilot",
         url: "https://ia801505.us.archive.org/25/items/alf-complete/S01E00%20-%20Unaired%20Pilot.mp4"
-     url:"https://dn720304.ca.archive.org/0/items/mamas-family-s-01e-07-mama-gets-a-job/Mama%27s%20Family%20-%20s01e07%20-%20Mama%20Gets%20a%20Job.mp4" 
-  url:"https://ia801005.us.archive.org/14/items/familymatters_202507/season%201/Family%20Matters%20-%201x01%20-%20Pilot%20The%20Mama%20Who%20Came%20to%20Dinner.mp4"}
-      // add more sitcoms here later
+      }
     ]
   },
-
   {
-    name: "Channel 04",
+    name: "Cartoon Channel",
     videos: [
       {
         title: "Example Cartoon",
-        url: ""
+        url: "https://ia801505.us.archive.org/25/items/alf-complete/S01E00%20-%20Unaired%20Pilot.mp4"
       }
-      // replace with real cartoon links
     ]
   }
 ];
 
-/* ========================= */
-
 let currentChannel = 0;
 let currentShow = 0;
-
-
-/* =========================
-   PLAY CURRENT SHOW
-   ========================= */
 
 function playCurrent() {
   const ch = channels[currentChannel];
@@ -187,21 +178,17 @@ function playCurrent() {
   video.src = show.url;
 
   if (isPoweredOn) {
-    video.play();
+    video.play().catch(()=>{});
   }
 }
 
-
-/* =========================
-   CHANNEL UP / DOWN
-   ========================= */
+/* channel buttons */
 
 document.getElementById("channelUp").addEventListener("click", () => {
   if (!isPoweredOn) return;
 
   currentChannel = (currentChannel + 1) % channels.length;
   currentShow = 0;
-
   playCurrent();
 });
 
@@ -211,28 +198,18 @@ document.getElementById("channelDown").addEventListener("click", () => {
   currentChannel =
     (currentChannel - 1 + channels.length) % channels.length;
   currentShow = 0;
-
   playCurrent();
 });
 
-
-/* =========================
-   AUTO PLAY NEXT SHOW
-   (inside the same channel)
-   ========================= */
+/* auto next show */
 
 video.addEventListener("ended", () => {
   const ch = channels[currentChannel];
-
   currentShow = (currentShow + 1) % ch.videos.length;
-
   playCurrent();
 });
 
-
-/* =========================
-   POWER BUTTON
-   ========================= */
+/* power */
 
 document.getElementById("power").addEventListener("click", () => {
   isPoweredOn = !isPoweredOn;
@@ -240,7 +217,7 @@ document.getElementById("power").addEventListener("click", () => {
   if (isPoweredOn) {
     video.classList.remove("off");
     overlay.classList.remove("off");
-    video.play();
+    video.play().catch(()=>{});
   } else {
     video.pause();
     video.classList.add("off");
@@ -248,10 +225,7 @@ document.getElementById("power").addEventListener("click", () => {
   }
 });
 
-
-/* =========================
-   VOLUME
-   ========================= */
+/* volume */
 
 document.getElementById("volUp").addEventListener("click", () => {
   video.volume = Math.min(1, video.volume + 0.1);
@@ -261,29 +235,9 @@ document.getElementById("volDown").addEventListener("click", () => {
   video.volume = Math.max(0, video.volume - 0.1);
 });
 
-
-/* =========================
-   START TV
-   ========================= */
+/* start */
 
 playCurrent();
 
+});
 </script>
-
-</body>
-</html>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
