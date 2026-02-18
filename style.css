@@ -1,0 +1,74 @@
+body {
+  background: #111;
+  color: #fff;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  font-family: 'Courier New', monospace;
+  margin: 0;
+}
+
+.tv-container {
+  position: relative;
+  width: 800px;
+  max-width: 90vw;
+}
+
+.tv-frame {
+  width: 100%;
+  display: block;
+}
+
+.tv-screen {
+  position: absolute;
+  top: 12%;
+  left: 10%;
+  width: 80%;
+  height: 60%;
+  background: black;
+}
+
+.channel-overlay {
+  position: absolute;
+  top: 5%;
+  left: 50%;
+  transform: translateX(-50%);
+  background: rgba(0,0,0,0.5);
+  padding: 4px 10px;
+  border-radius: 4px;
+  font-size: 18px;
+}
+
+.controls {
+  margin-top: 15px;
+  display: flex;
+  justify-content: space-around;
+}
+
+button {
+  padding: 10px 20px;
+  font-family: monospace;
+  font-size: 16px;
+  border-radius: 8px;
+  border: none;
+  cursor: pointer;
+  background: #555;
+  color: #fff;
+}
+
+button:hover {
+  background: #777;
+}
+
+.static {
+  position: absolute;
+  top: 12%;
+  left: 10%;
+  width: 80%;
+  height: 60%;
+  background: url('../assets/static.gif') center/cover no-repeat;
+  display: none;
+  pointer-events: none;
+  z-index: 5;
+}
