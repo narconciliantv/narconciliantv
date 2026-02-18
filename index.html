@@ -20,10 +20,12 @@
     }
     #player-container {
       margin: 20px auto;
+      width: 80%;
+      max-width: 1000px;
     }
     video {
-      width: 80%;
-      max-width: 800px;
+      width: 100%;
+      max-width: 1000px;
       border: 2px solid #444;
       background: #000;
     }
@@ -42,60 +44,106 @@
       background: #333;
       font-weight: bold;
     }
+    #password-prompt {
+      margin: 20px auto;
+    }
+    #controls {
+      margin: 10px;
+    }
+    button {
+      padding: 5px 10px;
+      margin: 0 5px;
+      cursor: pointer;
+    }
   </style>
 </head>
 <body>
 
-  <header>Micro Nations TV</header>
+<header>Micro Nations TV</header>
 
-  <div id="player-container">
-    <video id="tv-player" controls autoplay>
-      <source src="" type="video/mp4">
-      Your browser does not support the video tag.
-    </video>
-  </div>
+<div id="player-container">
+  <video id="tv-player" controls autoplay>
+    <source src="https://archive.org/download/ALF_1986_EP1/ALF_1986_EP1_512kb.mp4" type="video/mp4">
+    Your browser does not support the video tag.
+  </video>
+</div>
 
-  <div id="playlist">
-    <div class="playlist-item" data-src="https://ia801505.us.archive.org/25/items/alf-complete/S01E00%20-%20Unaired%20Pilot.mp4">Now Playing: ALF Episode 1</div>
-    <div class="playlist-item" data-src="https://archive.org/download/PacManShow_Ep2/PacManShow_Ep2.mp4">Next Up: Pac-Man Show Episode 2</div>
-    <div class="playlist-item" data-src="https://archive.org/download/ALF_Episode2/ALF_Episode2.mp4">Next: ALF Episode 2</div>
-  </div>
+<div id="playlist">
+  <div class="playlist-item" data-src="https://ia801505.us.archive.org/25/items/alf-complete/S01E00%20-%20Unaired%20Pilot.mp4">ALF Episode 1</div>
+  <div class="playlist-item" data-src="https://archive.org/download/PacManShow_EP2/PacManShow_EP2_512kb.mp4">Pac-Man Show Episode 2</div>
+  <div class="playlist-item" data-src="https://archive.org/download/ALF_1986_EP2/ALF_1986_EP2_512kb.mp4">ALF Episode 2</div>
+</div>
 
-  <script>
-    const player = document.getElementById('tv-player');
-    const items = document.querySelectorAll('.playlist-item');
-    let currentIndex = 0;
+<div id="password-prompt">
+  <input type="password" id="password-input" placeholder="Enter control password">
+  <button id="submit-password">Unlock Controls</button>
+</div>
 
-    function playVideo(index) {
-      const selected = items[index];
-      if (!selected) return;
+<div id="controls">
+  <button id="prev">⏮ Previous</button>
+  <button id="next">⏭ Next</button>
+</div>
 
-      // Remove active class from all
-      items.forEach(item => item.classList.remove('active'));
-      selected.classList.add('active');
+<script>
+const PASSWORD = "microtv123"; // set your password
+const player = document.getElementById('tv-player');
+const items = document.querySelectorAll('.playlist-item');
+const passwordPrompt = document.getElementById('password-prompt');
+const controlsDiv = document.getElementById('controls');
+const passwordInput = document.getElementById('password-input');
+const submitPassword = document.getElementById('submit-password');
 
-      player.src = selected.dataset.src;
-      player.play();
-      currentIndex = index;
-    }
+let currentIndex = 0;
+let controlsUnlocked = false;
 
-    // Play next video automatically
-    player.addEventListener('ended', () => {
-      const nextIndex = currentIndex + 1;
-      if (nextIndex < items.length) {
-        playVideo(nextIndex);
-      }
-    });
+// Play a video from the playlist
+function playVideo(index) {
+  const selected = items[index];
+  if (!selected) return;
+  items.forEach(item => item.classList.remove('active'));
+  selected.classList.add('active');
+  player.src = selected.dataset.src;
+  player.play();
+  currentIndex = index;
+}
 
-    // Click playlist to play video
-    items.forEach((item, index) => {
-      item.addEventListener('click', () => playVideo(index));
-    });
+// Unlock controls after password
+function unlockControls() {
+  controlsUnlocked = true;
+  passwordPrompt.style.display = 'none';
+  controlsDiv.style.display = 'block';
+  alert("Controls unlocked! You can now skip and use the playlist.");
+}
 
-    // Start first video
-    playVideo(0);
-  </script>
+// Password submit
+submitPassword.addEventListener('click', () => {
+  if (passwordInput.value.trim() === PASSWORD) unlockControls();
+  else alert("Incorrect password");
+  passwordInput.value = '';
+});
+
+// Playlist click (only after password)
+items.forEach((item, index) => {
+  item.addEventListener('click', () => {
+    if (controlsUnlocked) playVideo(index);
+    else alert("Enter password to control playback");
+  });
+});
+
+// Skip buttons (only after password)
+document.getElementById('prev').addEventListener('click', () => {
+  if (!controlsUnlocked) return;
+  if (currentIndex > 0) playVideo(currentIndex - 1);
+});
+document.getElementById('next').addEventListener('click', () => {
+  if (!controlsUnlocked) return;
+  if (currentIndex < items.length - 1) playVideo(currentIndex + 1);
+});
+
+// Start the first video
+playVideo(0);
+</script>
 
 </body>
 </html>
-    
+
