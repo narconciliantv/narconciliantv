@@ -32,11 +32,17 @@
   /* Video inside TV screen */
   .tv-screen {
     position: absolute;
-    top: 12%;
-    left: 10%;
-    width: 65%;
-    height: 75%;
+    top: 14%;   /* adjust to match your TV frame */
+    left: 11%;
+    width: 78%;
+    height: 58%;
     background: black;
+    transition: opacity 0.5s ease, filter 0.5s ease;
+  }
+
+  .tv-screen.off {
+    opacity: 0;
+    filter: brightness(0);
   }
 
   /* Channel overlay */
@@ -49,6 +55,11 @@
     padding: 4px 10px;
     border-radius: 4px;
     font-size: 18px;
+    transition: opacity 0.5s ease;
+  }
+
+  .channel-overlay.off {
+    opacity: 0;
   }
 
   /* Controls */
@@ -78,10 +89,10 @@
   /* TV static effect */
   .static {
     position: absolute;
-    top: 12%;
-    left: 10%;
-    width: 65%;
-    height: 75%;
+    top: 14%;
+    left: 11%;
+    width: 78%;
+    height: 58%;
     background: url('https://media1.tenor.com/m/kqNqwIahXKkAAAAC/static.gif') center/cover no-repeat;
     display: none;
     pointer-events: none;
@@ -159,11 +170,18 @@ document.getElementById('channelDown').addEventListener('click', () => {
   setChannel((currentIndex - 1 + playlist.length) % playlist.length);
 });
 
-// Power button
+// POWER button with fade & overlay hide
 document.getElementById('power').addEventListener('click', () => {
   isPoweredOn = !isPoweredOn;
-  if(isPoweredOn) video.play();
-  else video.pause();
+  if(isPoweredOn){
+    video.classList.remove('off');
+    overlay.classList.remove('off');
+    video.play();
+  } else {
+    video.classList.add('off');
+    overlay.classList.add('off');
+    video.pause();
+  }
 });
 
 // Volume buttons
@@ -180,6 +198,8 @@ setChannel(currentIndex);
 
 </body>
 </html>
+
+
 
 
 
