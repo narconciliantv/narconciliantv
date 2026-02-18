@@ -2,12 +2,12 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>Micro Nations TV</title>
+<title>Micro Nations TV - ALF Pilot</title>
 <style>
   body {
-    font-family: Arial, sans-serif;
     background: #111;
     color: #fff;
+    font-family: Arial, sans-serif;
     text-align: center;
     margin: 0;
     padding: 0;
@@ -19,138 +19,28 @@
     font-weight: bold;
   }
   #player-container {
+    margin: 20px auto;
     width: 80%;
     max-width: 1000px;
-    margin: 20px auto;
-    position: relative;
-    padding-bottom: 56.25%; /* 16:9 aspect ratio */
-    height: 0;
   }
-  #player-container iframe {
-    position: absolute;
-    top: 0;
-    left: 0;
+  video {
     width: 100%;
-    height: 100%;
+    max-width: 1000px;
     border: 2px solid #444;
-  }
-  #playlist {
-    margin: 20px auto;
-    width: 80%;
-    max-width: 800px;
-    text-align: left;
-  }
-  .playlist-item {
-    padding: 10px;
-    border-bottom: 1px solid #444;
-    cursor: pointer;
-  }
-  .playlist-item.active {
-    background: #333;
-    font-weight: bold;
-  }
-  #password-prompt {
-    margin: 20px auto;
-  }
-  #controls {
-    margin: 10px;
-    display: none;
-  }
-  button {
-    padding: 5px 10px;
-    margin: 0 5px;
-    cursor: pointer;
+    background: #000;
   }
 </style>
 </head>
 <body>
 
-<header>Micro Nations TV</header>
+<header>Micro Nations TV - ALF Unaired Pilot</header>
 
 <div id="player-container">
-  <!-- Start with first video -->
-  <iframe id="tv-player" src="https://archive.org/embed/ALF_1986_EP1" frameborder="0" allowfullscreen></iframe>
+  <video id="tv-player" controls autoplay>
+    <source src="https://ia801505.us.archive.org/25/items/alf-complete/S01E00%20-%20Unaired%20Pilot.mp4" type="video/mp4">
+    Your browser does not support the video tag.
+  </video>
 </div>
-
-<div id="playlist">
-  <div class="playlist-item" data-src=""https://ia801505.us.archive.org/25/items/alf-complete/S01E00%20-%20Unaired%20Pilot.mp4">ALF Episode 1</div>
-  <div class="playlist-item" data-src="https://archive.org/embed/PacManShow_EP2">Pac-Man Show Episode 2</div>
-  <div class="playlist-item" data-src="https://archive.org/embed/ALF_1986_EP2">ALF Episode 2</div>
-</div>
-
-<div id="password-prompt">
-  <input type="password" id="password-input" placeholder="Enter control password">
-  <button id="submit-password">Unlock Controls</button>
-</div>
-
-<div id="controls">
-  <button id="prev">⏮ Previous</button>
-  <button id="next">⏭ Next</button>
-</div>
-
-<script>
-const PASSWORD = "microtv123"; // change this
-const player = document.getElementById('tv-player');
-const items = document.querySelectorAll('.playlist-item');
-const passwordPrompt = document.getElementById('password-prompt');
-const controlsDiv = document.getElementById('controls');
-const passwordInput = document.getElementById('password-input');
-const submitPassword = document.getElementById('submit-password');
-
-let currentIndex = 0;
-let controlsUnlocked = false;
-
-// Highlight current playlist item
-function highlight(index) {
-  items.forEach(item => item.classList.remove('active'));
-  items[index].classList.add('active');
-}
-
-// Play video by changing iframe src
-function playVideo(index) {
-  const selected = items[index];
-  if (!selected) return;
-  player.src = selected.dataset.src;
-  currentIndex = index;
-  highlight(index);
-}
-
-// Unlock password-controlled actions
-function unlockControls() {
-  controlsUnlocked = true;
-  passwordPrompt.style.display = 'none';
-  controlsDiv.style.display = 'block';
-  alert("Controls unlocked! You can now change videos using the playlist and skip buttons.");
-}
-
-// Password submit
-submitPassword.addEventListener('click', () => {
-  if (passwordInput.value.trim() === PASSWORD) unlockControls();
-  else alert("Incorrect password");
-  passwordInput.value = '';
-});
-
-// Playlist clicks (require password)
-items.forEach((item, index) => {
-  item.addEventListener('click', () => {
-    if (controlsUnlocked) playVideo(index);
-    else alert("Enter password to change videos");
-  });
-});
-
-// Skip buttons (require password)
-document.getElementById('prev').addEventListener('click', () => {
-  if (!controlsUnlocked) return;
-  if (currentIndex > 0) playVideo(currentIndex - 1);
-});
-document.getElementById('next').addEventListener('click', () => {
-  if (!controlsUnlocked) return;
-  if (currentIndex < items.length - 1) playVideo(currentIndex + 1);
-});
-
-// Start first video highlight
-highlight(0);
-</script>
 
 </body>
 </html>
