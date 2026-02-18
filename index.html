@@ -128,76 +128,150 @@
 </div>
 
 <script>
-// Playlist of Archive.org videos with names
-const playlist = [
-  {name: "ALF Pilot", url: "https://ia801505.us.archive.org/25/items/alf-complete/S01E00%20-%20Unaired%20Pilot.mp4"},
-  {name: "ALF S01E01", url: "https://dn720304.ca.archive.org/0/items/mamas-family-s-01e-07-mama-gets-a-job/Mama%27s%20Family%20-%20s01e07%20-%20Mama%20Gets%20a%20Job.mp4"},
-  {name: "ALF S01E02", url: "https://ia801005.us.archive.org/14/items/familymatters_202507/season%201/Family%20Matters%20-%201x01%20-%20Pilot%20The%20Mama%20Who%20Came%20to%20Dinner.mp4"}
-];
-
-let currentIndex = 0;
 const video = document.getElementById('tvScreen');
 const overlay = document.getElementById('channelOverlay');
 const staticEffect = document.getElementById('staticEffect');
+
 let isPoweredOn = true;
 
-// Preload videos
-playlist.forEach(item => {
-  const vid = document.createElement('video');
-  vid.src = item.url;
-});
+/* =========================
+   CHANNELS (your stations)
+   ========================= */
 
-// Set a channel
-function setChannel(index){
-  currentIndex = index;
-  overlay.textContent = playlist[index].name;
+const channels = [
+  {
+    name: "Sitcom Channel",
+    videos: [
+      {
+        title: "ALF – Unaired Pilot",
+        url: "https://ia801505.us.archive.org/25/items/alf-complete/S01E00%20-%20Unaired%20Pilot.mp4"
+      }
+      // add more sitcoms here later
+    ]
+  },
 
-  // Show static briefly
-  staticEffect.style.display = 'block';
-  setTimeout(() => staticEffect.style.display = 'none', 500);
+  {
+    name: "Cartoon Channel",
+    videos: [
+      {
+        title: "Example Cartoon",
+        url: "https://ia801505.us.archive.org/25/items/alf-complete/S01E00%20-%20Unaired%20Pilot.mp4"
+      }
+      // replace with real cartoon links
+    ]
+  }
+];
 
-  video.src = playlist[index].url;
-  if(isPoweredOn) video.play();
+/* ========================= */
+
+let currentChannel = 0;
+let currentShow = 0;
+
+
+/* =========================
+   PLAY CURRENT SHOW
+   ========================= */
+
+function playCurrent() {
+  const ch = channels[currentChannel];
+  const show = ch.videos[currentShow];
+
+  overlay.textContent = ch.name + " – " + show.title;
+
+  staticEffect.style.display = "block";
+  setTimeout(() => {
+    staticEffect.style.display = "none";
+  }, 500);
+
+  video.src = show.url;
+
+  if (isPoweredOn) {
+    video.play();
+  }
 }
 
-// Channel buttons
-document.getElementById('channelUp').addEventListener('click', () => {
-  if(!isPoweredOn) return;
-  setChannel((currentIndex + 1) % playlist.length);
-});
-document.getElementById('channelDown').addEventListener('click', () => {
-  if(!isPoweredOn) return;
-  setChannel((currentIndex - 1 + playlist.length) % playlist.length);
+
+/* =========================
+   CHANNEL UP / DOWN
+   ========================= */
+
+document.getElementById("channelUp").addEventListener("click", () => {
+  if (!isPoweredOn) return;
+
+  currentChannel = (currentChannel + 1) % channels.length;
+  currentShow = 0;
+
+  playCurrent();
 });
 
-// POWER button with fade & overlay hide
-document.getElementById('power').addEventListener('click', () => {
+document.getElementById("channelDown").addEventListener("click", () => {
+  if (!isPoweredOn) return;
+
+  currentChannel =
+    (currentChannel - 1 + channels.length) % channels.length;
+  currentShow = 0;
+
+  playCurrent();
+});
+
+
+/* =========================
+   AUTO PLAY NEXT SHOW
+   (inside the same channel)
+   ========================= */
+
+video.addEventListener("ended", () => {
+  const ch = channels[currentChannel];
+
+  currentShow = (currentShow + 1) % ch.videos.length;
+
+  playCurrent();
+});
+
+
+/* =========================
+   POWER BUTTON
+   ========================= */
+
+document.getElementById("power").addEventListener("click", () => {
   isPoweredOn = !isPoweredOn;
-  if(isPoweredOn){
-    video.classList.remove('off');
-    overlay.classList.remove('off');
+
+  if (isPoweredOn) {
+    video.classList.remove("off");
+    overlay.classList.remove("off");
     video.play();
   } else {
-    video.classList.add('off');
-    overlay.classList.add('off');
     video.pause();
+    video.classList.add("off");
+    overlay.classList.add("off");
   }
 });
 
-// Volume buttons
-document.getElementById('volUp').addEventListener('click', () => {
+
+/* =========================
+   VOLUME
+   ========================= */
+
+document.getElementById("volUp").addEventListener("click", () => {
   video.volume = Math.min(1, video.volume + 0.1);
 });
-document.getElementById('volDown').addEventListener('click', () => {
+
+document.getElementById("volDown").addEventListener("click", () => {
   video.volume = Math.max(0, video.volume - 0.1);
 });
 
-// Start with first channel
-setChannel(currentIndex);
+
+/* =========================
+   START TV
+   ========================= */
+
+playCurrent();
+
 </script>
 
 </body>
 </html>
+
 
 
 
