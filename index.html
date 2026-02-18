@@ -18,16 +18,25 @@
       font-size: 2em;
       font-weight: bold;
     }
+
+    /* Responsive iframe container */
     #player-container {
-      margin: 20px auto;
-    }
-    iframe {
       width: 80%;
-      max-width: 800px;
-      height: 450px;
-      border: 2px solid #444;
-      background: #000;
+      max-width: 1200px;
+      margin: 20px auto;
+      position: relative;
+      padding-bottom: 56.25%; /* 16:9 aspect ratio */
+      height: 0;
     }
+    #player-container iframe {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      border: 2px solid #444;
+    }
+
     #playlist {
       margin: 20px auto;
       width: 80%;
@@ -43,12 +52,13 @@
       background: #333;
       font-weight: bold;
     }
+
     #password-prompt {
       margin: 20px auto;
     }
     #controls {
       margin: 10px;
-      display: none;
+      display: none; /* Hidden until password entered */
     }
     button {
       padding: 5px 10px;
@@ -83,7 +93,7 @@
 
   <script>
     // === CONFIG ===
-    const PASSWORD = "microtv123"; // change to your password
+    const PASSWORD = "microtv123"; // Change to your password
 
     // === ELEMENTS ===
     const player = document.getElementById('tv-player');
@@ -93,9 +103,70 @@
     const passwordInput = document.getElementById('password-input');
     const submitPassword = document.getElementById('submit-password');
 
+    // === STATE ===
+    let currentIndex = 0;
+    let controlsUnlocked = false;
+
+    // === FUNCTIONS ===
+    function playVideo(index) {
+      const selected = items[index];
+      if (!selected) return;
+
+      // Highlight current playlist item
+      items.forEach(item => item.classList.remove('active'));
+      selected.classList.add('active');
+
+      // Change iframe source
+      player.src = selected.dataset.src;
+      currentIndex = index;
+    }
+
+    function unlockControls() {
+      controlsUnlocked = true;
+      passwordPrompt.style.display = 'none';
+      controlsDiv.style.display = 'block';
+      alert("Controls unlocked! You can now use the player UI, playlist, and skip buttons.");
+    }
+
+    // === EVENT LISTENERS ===
+
+    // Password submit
+    submitPassword.addEventListener('click', () => {
+      if (passwordInput.value.trim() === PASSWORD) {
+        unlockControls();
+      } else {
+        alert("Incorrect password");
+      }
+      passwordInput.value = '';
+    });
+
+    // Playlist click (only works if password entered)
+    items.forEach((item, index) => {
+      item.addEventListener('click', () => {
+        if (controlsUnlocked) {
+          playVideo(index);
+        } else {
+          alert("Enter password to control playback");
+        }
+      });
+    });
+
+    // Skip buttons
+    document.getElementById('prev').addEventListener('click', () => {
+      if (!controlsUnlocked) return;
+      if (currentIndex > 0) playVideo(currentIndex - 1);
+    });
+    document.getElementById('next').addEventListener('click', () => {
+      if (!controlsUnlocked) return;
+      if (currentIndex < items.length - 1) playVideo(currentIndex + 1);
+    });
+
+    // === INIT ===
+    playVideo(0); // Start first video
+  </script>
+
+</body>
+</html>
 
 
-
-
-
-
+    
