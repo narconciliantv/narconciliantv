@@ -4,23 +4,170 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Micro-Nation Retro TV</title>
-<link rel="stylesheet" href="css/style.css">
+<style>
+  body {
+    background: #111;
+    color: #fff;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    font-family: 'Courier New', monospace;
+  }
+
+  .tv-container {
+    position: relative;
+    width: 800px;
+    max-width: 90vw;
+  }
+
+  /* TV frame image */
+  .tv-frame {
+    width: 100%;
+    display: block;
+  }
+
+  /* Video placed over TV screen area */
+  .tv-screen {
+    position: absolute;
+    top: 12%;  /* adjust to fit your frame */
+    left: 10%; /* adjust to fit your frame */
+    width: 80%; /* adjust to fit your frame */
+    height: 60%; /* adjust to fit your frame */
+    background: black;
+  }
+
+  /* Overlay for channel name */
+  .channel-overlay {
+    position: absolute;
+    top: 5%;
+    left: 50%;
+    transform: translateX(-50%);
+    background: rgba(0,0,0,0.5);
+    padding: 4px 10px;
+    border-radius: 4px;
+    font-size: 18px;
+  }
+
+  /* Controls */
+  .controls {
+    margin-top: 15px;
+    display: flex;
+    justify-content: space-around;
+  }
+
+  button {
+    padding: 10px 20px;
+    font-family: monospace;
+    font-size: 16px;
+    border-radius: 8px;
+    border: none;
+    cursor: pointer;
+    background: #555;
+    color: #fff;
+  }
+
+  button:hover {
+    background: #777;
+  }
+
+  /* Optional static effect */
+  .static {
+    position: absolute;
+    top: 12%;
+    left: 10%;
+    width: 80%;
+    height: 60%;
+    background: url('https://i.imgur.com/TW0vI3d.gif') center/cover no-repeat;
+    display: none;
+    pointer-events: none;
+    z-index: 5;
+  }
+</style>
 </head>
 <body>
 
 <div class="tv-container">
-  <img class="tv-frame" src="assets/tv-frame.png" alt="Retro TV Frame">
+  <!-- TV frame image -->
+  <img class="tv-frame" src="https://i.imgur.com/5w9rYxP.png" alt="Retro TV Frame">
 
-  <video id="tvScreen" class="tv-screen" autoplay></video>
+  <!-- Video inside the TV -->
+  <video id="tvScreen" class="tv-screen" autoplay>
+    <source src="https://ia801505.us.archive.org/25/items/alf-complete/S01E00%20-%20Unaired%20Pilot.mp4" type="video/mp4">
+    Your browser does not support the video tag.
+  </video>
 
+  <!-- TV static overlay -->
   <div id="staticEffect" class="static"></div>
-  <div id="channelOverlay" class="channel-overlay"></div>
+
+  <!-- Channel overlay -->
+  <div id="channelOverlay" class="channel-overlay">ALF Pilot</div>
 </div>
 
+<!-- Buttons -->
 <div class="controls">
   <button id="power">POWER</button>
   <button id="channelUp">CH ▲</button>
   <button id="channelDown">CH ▼</button>
   <button id="volUp">VOL +</button>
-  <b
+  <button id="volDown">VOL -</button>
+</div>
+
+<script>
+// Playlist of Archive.org videos with channel names
+const playlist = [
+  {name: "ALF Pilot", url: "https://ia801505.us.archive.org/25/items/alf-complete/S01E00%20-%20Unaired%20Pilot.mp4"},
+  {name: "ALF S01E01", url: "https://ia801505.us.archive.org/25/items/alf-complete/S01E01%20-%20SomeOtherEpisode.mp4"},
+  {name: "ALF S01E02", url: "https://ia801505.us.archive.org/25/items/alf-complete/S01E02%20-%20AnotherEpisode.mp4"}
+];
+
+let currentIndex = 0;
+const video = document.getElementById('tvScreen');
+const overlay = document.getElementById('channelOverlay');
+const staticEffect = document.getElementById('staticEffect');
+let isPoweredOn = true;
+
+// Function to update video & channel overlay
+function setChannel(index) {
+  currentIndex = index;
+  overlay.textContent = playlist[index].name;
+
+  // show static briefly
+  staticEffect.style.display = 'block';
+  setTimeout(() => staticEffect.style.display = 'none', 500);
+
+  video.src = playlist[index].url;
+  if(isPoweredOn) video.play();
+}
+
+// Channel buttons
+document.getElementById('channelUp').addEventListener('click', () => {
+  if(!isPoweredOn) return;
+  setChannel((currentIndex + 1) % playlist.length);
+});
+
+document.getElementById('channelDown').addEventListener('click', () => {
+  if(!isPoweredOn) return;
+  setChannel((currentIndex - 1 + playlist.length) % playlist.length);
+});
+
+// Power button
+document.getElementById('power').addEventListener('click', () => {
+  isPoweredOn = !isPoweredOn;
+  if(isPoweredOn) video.play();
+  else video.pause();
+});
+
+// Volume buttons
+document.getElementById('volUp').addEventListener('click', () => {
+  video.volume = Math.min(1, video.volume + 0.1);
+});
+document.getElementById('volDown').addEventListener('click', () => {
+  video.volume = Math.max(0, video.volume - 0.1);
+});
+</script>
+
+</body>
+</html>
+
 
