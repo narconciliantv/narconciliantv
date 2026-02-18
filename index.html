@@ -6,7 +6,7 @@
 <title>Micro-Nation Retro TV</title>
 <style>
   body {
-    background: #111;
+    background: #123;
     color: #fff;
     display: flex;
     justify-content: center;
@@ -14,48 +14,26 @@
     min-height: 100vh;
     font-family: 'Courier New', monospace;
   }
-
-  .tv-container {
-    position: relative;
+  .tv-frame {
     width: 800px;
     max-width: 90vw;
+    border: 16px solid #333;
+    border-radius: 16px;
+    background: #000;
+    padding: 20px;
+    position: relative;
   }
-
-  /* TV frame image */
-  .tv-frame {
+  video {
     width: 100%;
-    display: block;
-  }
-
-  /* Video placed over TV screen area */
-  .tv-screen {
-    position: absolute;
-    top: 12%;  /* adjust to fit your frame */
-    left: 10%; /* adjust to fit your frame */
-    width: 80%; /* adjust to fit your frame */
-    height: 60%; /* adjust to fit your frame */
+    border: 4px solid #555;
+    border-radius: 8px;
     background: black;
   }
-
-  /* Overlay for channel name */
-  .channel-overlay {
-    position: absolute;
-    top: 5%;
-    left: 50%;
-    transform: translateX(-50%);
-    background: rgba(0,0,0,0.5);
-    padding: 4px 10px;
-    border-radius: 4px;
-    font-size: 18px;
-  }
-
-  /* Controls */
   .controls {
-    margin-top: 15px;
+    margin-top: 10px;
     display: flex;
     justify-content: space-around;
   }
-
   button {
     padding: 10px 20px;
     font-family: monospace;
@@ -66,102 +44,70 @@
     background: #555;
     color: #fff;
   }
-
   button:hover {
     background: #777;
-  }
-
-  /* Optional static effect */
-  .static {
-    position: absolute;
-    top: 12%;
-    left: 10%;
-    width: 80%;
-    height: 60%;
-    background: url('https://i.imgur.com/TW0vI3d.gif') center/cover no-repeat;
-    display: none;
-    pointer-events: none;
-    z-index: 5;
   }
 </style>
 </head>
 <body>
 
-<div class="tv-container">
-  <!-- TV frame image -->
-  <img class="tv-frame" src="https://tenor.com/view/crt-tv-old-school-mariomankey-no-background-gif-3815150994451275700" alt="Retro TV Frame">
-
-  <!-- Video inside the TV -->
-  <video id="tvScreen" class="tv-screen" autoplay>
+<div class="tv-frame">
+  <video id="tvScreen" controls autoplay>
     <source src="https://ia801505.us.archive.org/25/items/alf-complete/S01E00%20-%20Unaired%20Pilot.mp4" type="video/mp4">
     Your browser does not support the video tag.
   </video>
 
-  <!-- TV static overlay -->
-  <div id="staticEffect" class="static"></div>
-
-  <!-- Channel overlay -->
-  <div id="channelOverlay" class="channel-overlay">ALF Pilot</div>
-</div>
-
-<!-- Buttons -->
-<div class="controls">
-  <button id="power">POWER</button>
-  <button id="channelUp">CH ▲</button>
-  <button id="channelDown">CH ▼</button>
-  <button id="volUp">VOL +</button>
-  <button id="volDown">VOL -</button>
+  <div class="controls">
+    <button id="power">POWER</button>
+    <button id="channelUp">CH ▲</button>
+    <button id="channelDown">CH ▼</button>
+    <button id="volUp">VOL +</button>
+    <button id="volDown">VOL -</button>
+  </div>
 </div>
 
 <script>
-// Playlist of Archive.org videos with channel names
+// Playlist of Archive.org videos
 const playlist = [
-  {name: "ALF Pilot", url: "https://ia801505.us.archive.org/25/items/alf-complete/S01E00%20-%20Unaired%20Pilot.mp4"},
-  {name: "ALF S01E01", url: "https://ia801505.us.archive.org/25/items/alf-complete/S01E01%20-%20SomeOtherEpisode.mp4"},
-  {name: "ALF S01E02", url: "https://ia801505.us.archive.org/25/items/alf-complete/S01E02%20-%20AnotherEpisode.mp4"}
+  "https://ia801505.us.archive.org/25/items/alf-complete/S01E00%20-%20Unaired%20Pilot.mp4",
+  "https://ia801505.us.archive.org/25/items/alf-complete/S01E01%20-%20SomeOtherEpisode.mp4",
+  "https://ia801505.us.archive.org/25/items/alf-complete/S01E02%20-%20AnotherEpisode.mp4"
 ];
 
 let currentIndex = 0;
 const video = document.getElementById('tvScreen');
-const overlay = document.getElementById('channelOverlay');
-const staticEffect = document.getElementById('staticEffect');
 let isPoweredOn = true;
-
-// Function to update video & channel overlay
-function setChannel(index) {
-  currentIndex = index;
-  overlay.textContent = playlist[index].name;
-
-  // show static briefly
-  staticEffect.style.display = 'block';
-  setTimeout(() => staticEffect.style.display = 'none', 500);
-
-  video.src = playlist[index].url;
-  if(isPoweredOn) video.play();
-}
 
 // Channel buttons
 document.getElementById('channelUp').addEventListener('click', () => {
-  if(!isPoweredOn) return;
-  setChannel((currentIndex + 1) % playlist.length);
+  if (!isPoweredOn) return;
+  currentIndex = (currentIndex + 1) % playlist.length;
+  video.src = playlist[currentIndex];
+  video.play();
 });
 
 document.getElementById('channelDown').addEventListener('click', () => {
-  if(!isPoweredOn) return;
-  setChannel((currentIndex - 1 + playlist.length) % playlist.length);
+  if (!isPoweredOn) return;
+  currentIndex = (currentIndex - 1 + playlist.length) % playlist.length;
+  video.src = playlist[currentIndex];
+  video.play();
 });
 
 // Power button
 document.getElementById('power').addEventListener('click', () => {
   isPoweredOn = !isPoweredOn;
-  if(isPoweredOn) video.play();
-  else video.pause();
+  if (isPoweredOn) {
+    video.play();
+  } else {
+    video.pause();
+  }
 });
 
 // Volume buttons
 document.getElementById('volUp').addEventListener('click', () => {
   video.volume = Math.min(1, video.volume + 0.1);
 });
+
 document.getElementById('volDown').addEventListener('click', () => {
   video.volume = Math.max(0, video.volume - 0.1);
 });
@@ -169,7 +115,4 @@ document.getElementById('volDown').addEventListener('click', () => {
 
 </body>
 </html>
-
-
-
 
