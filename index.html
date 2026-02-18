@@ -19,22 +19,17 @@
       font-weight: bold;
     }
 
-    /* Responsive iframe container */
     #player-container {
-      width: 80%;
-      max-width: 1200px;
       margin: 20px auto;
-      position: relative;
-      padding-bottom: 56.25%; /* 16:9 aspect ratio */
-      height: 0;
+      width: 80%;
+      max-width: 1000px;
     }
-    #player-container iframe {
-      position: absolute;
-      top: 0;
-      left: 0;
+
+    video {
       width: 100%;
-      height: 100%;
+      max-width: 1000px;
       border: 2px solid #444;
+      background: #000;
     }
 
     #playlist {
@@ -43,11 +38,13 @@
       max-width: 800px;
       text-align: left;
     }
+
     .playlist-item {
       padding: 10px;
       border-bottom: 1px solid #444;
       cursor: pointer;
     }
+
     .playlist-item.active {
       background: #333;
       font-weight: bold;
@@ -56,10 +53,12 @@
     #password-prompt {
       margin: 20px auto;
     }
+
     #controls {
       margin: 10px;
-      
+      display: none;
     }
+
     button {
       padding: 5px 10px;
       margin: 0 5px;
@@ -72,13 +71,16 @@
   <header>Micro Nations TV</header>
 
   <div id="player-container">
-    <iframe id="tv-player" src="" frameborder="0" allowfullscreen></iframe>
+    <video id="tv-player" controls autoplay>
+      <source src="https://archive.org/download/ALF_1986_EP1/ALF_1986_EP1_512kb.mp4" type="video/mp4">
+      Your browser does not support the video tag.
+    </video>
   </div>
 
   <div id="playlist">
-    <div class="playlist-item" data-src="https://ia801505.us.archive.org/25/items/alf-complete/S01E00%20-%20Unaired%20Pilot.mp4">Now Playing: ALF Episode 1</div>
-    <div class="playlist-item" data-src="https://archive.org/embed/PacManShow_EP2">Next Up: Pac-Man Show Episode 2</div>
-    <div class="playlist-item" data-src="https://archive.org/embed/ALF_1986_EP2">Next: ALF Episode 2</div>
+    <div class="playlist-item" data-src="https://ia801505.us.archive.org/25/items/alf-complete/S01E00%20-%20Unaired%20Pilot.mp4">ALF Episode 1</div>
+    <div class="playlist-item" data-src="https://archive.org/download/PacManShow_EP2/PacManShow_EP2_512kb.mp4">Pac-Man Show Episode 2</div>
+    <div class="playlist-item" data-src="https://archive.org/download/ALF_1986_EP2/ALF_1986_EP2_512kb.mp4">ALF Episode 2</div>
   </div>
 
   <div id="password-prompt">
@@ -92,10 +94,7 @@
   </div>
 
   <script>
-    // === CONFIG ===
-    const PASSWORD = "microtv123"; // Change to your password
-
-    // === ELEMENTS ===
+    const PASSWORD = "microtv123"; // change to your password
     const player = document.getElementById('tv-player');
     const items = document.querySelectorAll('.playlist-item');
     const passwordPrompt = document.getElementById('password-prompt');
@@ -103,21 +102,16 @@
     const passwordInput = document.getElementById('password-input');
     const submitPassword = document.getElementById('submit-password');
 
-    // === STATE ===
     let currentIndex = 0;
     let controlsUnlocked = false;
 
-    // === FUNCTIONS ===
     function playVideo(index) {
       const selected = items[index];
       if (!selected) return;
-
-      // Highlight current playlist item
       items.forEach(item => item.classList.remove('active'));
       selected.classList.add('active');
-
-      // Change iframe source
       player.src = selected.dataset.src;
+      player.play();
       currentIndex = index;
     }
 
@@ -125,12 +119,10 @@
       controlsUnlocked = true;
       passwordPrompt.style.display = 'none';
       controlsDiv.style.display = 'block';
-      alert("Controls unlocked! You can now use the player UI, playlist, and skip buttons.");
+      alert("Controls unlocked! You can now use the playlist and skip buttons.");
     }
 
-    // === EVENT LISTENERS ===
-
-    // Password submit
+    // Password unlock
     submitPassword.addEventListener('click', () => {
       if (passwordInput.value.trim() === PASSWORD) {
         unlockControls();
@@ -140,14 +132,11 @@
       passwordInput.value = '';
     });
 
-    // Playlist click (only works if password entered)
+    // Playlist click (only after password)
     items.forEach((item, index) => {
       item.addEventListener('click', () => {
-        if (controlsUnlocked) {
-          playVideo(index);
-        } else {
-          alert("Enter password to control playback");
-        }
+        if (controlsUnlocked) playVideo(index);
+        else alert("Enter password to control playback");
       });
     });
 
@@ -156,18 +145,9 @@
       if (!controlsUnlocked) return;
       if (currentIndex > 0) playVideo(currentIndex - 1);
     });
-    document.getElementById('next').addEventListener('click', () => {
-      if (!controlsUnlocked) return;
-      if (currentIndex < items.length - 1) playVideo(currentIndex + 1);
-    });
 
-    // === INIT ===
-    playVideo(0); // Start first video
-  </script>
-
-</body>
-</html>
+    document.getElementById('next').addE
 
 
-    
+
 
