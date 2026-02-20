@@ -139,52 +139,27 @@ let isPoweredOn = true;
    CHANNELS
    ========================= */
 
-const channels = [
-  {
-    name: "Sitcom Channel",
-    videos: [
-      {
-        title: "ALF – Unaired Pilot",
-        url: "https://ia801505.us.archive.org/25/items/alf-complete/S01E00%20-%20Unaired%20Pilot.mp4"
-      }
-         
-      
-    ]
-  },
+const channels = makeChannels({
+  "Sitcom Channel": [
+    ["ALF – Unaired Pilot",
+     "https://ia801505.us.archive.org/25/items/alf-complete/S01E00%20-%20Unaired%20Pilot.mp4"]
+  ],
 
-  {
-    name: "Cartoon Channel",
-    videos: [
-      {
-        title: "Example Cartoon",
-        url: "https://dn720703.ca.archive.org/0/items/036mysticmanorflopgoestheweaselthelegendoflongjondvdripxvidphz/014%20-%20Pest%20of%20a%20Guest%2C%20The%20Impractical%20Joker%2C%20Fat%20and%20Furry%20DVDRip%20XviD%20%5BPhZ%5D.mp4"
-      }
-    ]
-  },
+  "Cartoon Channel": [
+    ["Example Cartoon",
+     "https://dn720703.ca.archive.org/0/items/036mysticmanorflopgoestheweaselthelegendoflongjondvdripxvidphz/014%20-%20Pest%20of%20a%20Guest%2C%20The%20Impractical%20Joker%2C%20Fat%20and%20Furry%20DVDRip%20XviD%20%5BPhZ%5D.mp4"]
+  ],
 
-  {
-    name: "News",
-    videos: [
-      {
-        title: "Example News Clip",
-        url: "https://ia801405.us.archive.org/18/items/lv_0_20260218174830/lv_0_20260218174830.mp4"
-      }
-    ]
-  },
+  "News": [
+    ["Example News Clip",
+     "https://ia801505.us.archive.org/25/items/alf-complete/S01E00%20-%20Unaired%20Pilot.mp4"]
+  ],
 
-  {
-    name: "mrsa ymmom",
-    videos: [
-      {
-        title: "Example Special",
-        url: "https://ia601900.us.archive.org/21/items/videoplayback_20260219_0534/videoplayback.mp4"
-      }
-    ]
-  }
-];
-
-  
-
+  "Specials": [
+    ["Example Special",
+     "https://ia801505.us.archive.org/25/items/alf-complete/S01E00%20-%20Unaired%20Pilot.mp4"]
+  ]
+});
 let currentChannel = 0;
 let currentShow = 0;
 
@@ -265,6 +240,7 @@ playCurrent();
 
 });
 </script>
+
 
 
 
