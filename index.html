@@ -214,10 +214,17 @@ document.getElementById("channelDown").addEventListener("click", () => {
 
 video.addEventListener("ended", () => {
   const ch = channels[currentChannel];
-  currentShow = (currentShow + 1) % ch.videos.length;
+
+  if (ch.videos.length <= 1) return;
+
+  let next;
+  do {
+    next = Math.floor(Math.random() * ch.videos.length);
+  } while (next === currentShow);
+
+  currentShow = next;
   playCurrent();
 });
-
 /* power */
 
 document.getElementById("power").addEventListener("click", () => {
@@ -250,6 +257,7 @@ playCurrent();
 
 });
 </script>
+
 
 
 
