@@ -138,7 +138,13 @@ let isPoweredOn = true;
 /* =========================
    CHANNELS
    ========================= */
-
+function makeChannels(map) {
+  return Object.entries(map).map(([name, list]) => ({
+    name,
+    videos: list.map(([title, url]) => ({ title, url }))
+  }));
+}
+  
 const channels = makeChannels({
   "Sitcom Channel": [
     ["ALF – Unaired Pilot",
@@ -240,6 +246,7 @@ playCurrent();
 
 });
 </script>
+
 
 
 
